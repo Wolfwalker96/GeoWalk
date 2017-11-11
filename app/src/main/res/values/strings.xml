@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GeoWalk</string>
+    <string name="title_activity_map">Carte</string>
+</resources>
