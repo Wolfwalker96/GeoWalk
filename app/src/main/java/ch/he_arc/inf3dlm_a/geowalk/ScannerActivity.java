@@ -1,5 +1,6 @@
 package ch.he_arc.inf3dlm_a.geowalk;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,11 +22,14 @@ public class ScannerActivity extends AppCompatActivity {
     private BarcodeDetector detector;
     private CameraSource cameraSource;
     private SurfaceView cameraPreview;
+    private GeoBase base;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
+        onNewIntent(getIntent());
 
         cameraPreview = (SurfaceView) findViewById(R.id.cameraPreview);
 
@@ -74,9 +78,21 @@ public class ScannerActivity extends AppCompatActivity {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
 
                 if (barcodes.size() != 0) {
-                    Log.d("BARCODE",barcodes.valueAt(0).displayValue);
+                    if(barcodes.valueAt(0).displayValue.equals("GeoWalk")){
+                        Log.d("BARCODE",barcodes.valueAt(0).displayValue);
+                        Intent returnIntent = new Intent(ScannerActivity.this,MapActivity.class);
+                        returnIntent.putExtra("base", base);
+                        returnIntent.putExtra("isFound",true);
+                        ScannerActivity.this.startActivity(returnIntent);
+                    }
                 }
             }
         });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        this.intent = intent;
+        base = (GeoBase) intent.getExtras().get("base");
     }
 }

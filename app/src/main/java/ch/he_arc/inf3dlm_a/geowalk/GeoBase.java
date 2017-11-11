@@ -2,12 +2,14 @@ package ch.he_arc.inf3dlm_a.geowalk;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
+
 /**
  * Created by paul.jeanbour on 10.11.2017.
  */
 
 @IgnoreExtraProperties
-public class GeoBase {
+public class GeoBase implements Serializable{
     public String id;
     public int score;
     public GeoBaseLocation location;

@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
@@ -36,6 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -43,7 +45,12 @@ import java.util.Random;
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
+    private TextView txvScore;
+
     private List<GeoBase> bases = new ArrayList<>();
+    private HashMap<GeoBase, PendingIntent> basePendingIntentHashMap = new HashMap<>();
+    private int scores = 0;
+    private List<GeoBase> basesFound = new ArrayList<>();
     private LocationManager locationManager;
     private DatabaseReference myDb;
     private Location location;
@@ -65,6 +72,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 myDb.child("bases").push().setValue(new GeoBase(location.getLatitude(),location.getLongitude(),2));
             }
         });
+        txvScore = (TextView) findViewById(R.id.scoreView);
     }
 
     protected void initFirebase() {
@@ -81,12 +89,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     return;
                 }
                 Intent intent = new Intent(MapActivity.this, ScannerActivity.class);
+                intent.putExtra("base", base);
+                intent.setAction(Long.toString(System.currentTimeMillis())); // Some magic tricks
+                PendingIntent pendingIntent = PendingIntent.getActivity(MapActivity.this, 1,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                basePendingIntentHashMap.put(base, pendingIntent);
                 locationManager.addProximityAlert(
                         base.location.latitude,
                         base.location.longitude,
-                        10,
+                        5,
                         -1,
-                        PendingIntent.getActivity(MapActivity.this, 1,intent, PendingIntent.FLAG_IMMUTABLE));
+                        pendingIntent);
                 refreshMap();
             }
 
@@ -99,6 +111,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 GeoBase base = dataSnapshot.getValue(GeoBase.class);
                 bases.remove(base);
+                basePendingIntentHashMap.remove(base);
                 refreshMap();
             }
 
@@ -145,8 +158,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     public void refreshMap() {
         map.clear();
         for (GeoBase base : bases) {
-            map.addMarker(new MarkerOptions().position(base.location.getLatLng()).title(base.id).flat(true));
+            MarkerOptions marker = new MarkerOptions().position(base.location.getLatLng()).title(base.id).flat(true);
+            if(!basesFound.contains(base))
+                map.addMarker(marker);
+            else
+                map.addMarker(marker.alpha(0.5f));
         }
+        txvScore.setText("Score : "+Integer.toString(scores));
     }
 
     @Override
@@ -157,4 +175,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
         map.setMyLocationEnabled(true);
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d("TEST","Non, c'est moi !");
+        GeoBase baseFind = (GeoBase) intent.getExtras().get("base");
+        if(intent.getBooleanExtra("isFound",false)) {
+            basesFound.add(baseFind);
+            scores += baseFind.score;
+            refreshMap();
+        }
+    }
+
 }
