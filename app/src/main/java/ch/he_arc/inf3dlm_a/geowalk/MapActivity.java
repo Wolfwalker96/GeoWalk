@@ -11,6 +11,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.text.BoringLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -84,11 +85,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 GeoBase base = dataSnapshot.getValue(GeoBase.class);
+                base.id = dataSnapshot.getKey();
                 bases.add(base);
                 if (ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                Intent intent = new Intent(MapActivity.this, ScannerActivity.class);
+                /*Intent intent = new Intent(MapActivity.this, ScannerActivity.class);
                 intent.putExtra("base", base);
                 intent.setAction(Long.toString(System.currentTimeMillis())); // Some magic tricks
                 PendingIntent pendingIntent = PendingIntent.getActivity(MapActivity.this, 1,intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -98,7 +100,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                         base.location.longitude,
                         5,
                         -1,
-                        pendingIntent);
+                        pendingIntent);*/
                 refreshMap();
             }
 
@@ -141,16 +143,33 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                location = locationResult.getLastLocation();
-                // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude()),18.5f));
-                float bearing = location.getBearing();
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(
-                        new CameraPosition(
-                                new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()),
-                                18.5f,
-                                0,
-                                bearing)), 1000, null);
-                Log.d("BEARING", Float.toString(bearing));
+                if (MapActivity.this.hasWindowFocus()) {
+                    location = locationResult.getLastLocation();
+                    // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude()),18.5f));
+                    float bearing = location.getBearing();
+                    map.animateCamera(CameraUpdateFactory.newCameraPosition(
+                            new CameraPosition(
+                                    new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()),
+                                    18.5f,
+                                    0,
+                                    bearing)), 1000, null);
+                    Log.d("BEARING", Float.toString(bearing));
+
+                    // Proximity detection
+                    for (GeoBase base : MapActivity.this.bases) {
+                        if (!basesFound.contains(base)) {
+                            float[] distance = new float[3];
+                            Location.distanceBetween(location.getLatitude(), location.getLongitude(), base.location.latitude, base.location.longitude, distance);
+                            if (distance[0] <= 5) { // Distance of 5 meter
+                                Intent intent = new Intent(MapActivity.this, ScannerActivity.class);
+                                intent.putExtra("base", base);
+                                intent.setAction(Long.toString(System.currentTimeMillis())); // Some magic tricks
+                                startActivity(intent);
+                            }
+                        }
+                    }
+
+                }
             }
         }, android.os.Looper.myLooper());
     }

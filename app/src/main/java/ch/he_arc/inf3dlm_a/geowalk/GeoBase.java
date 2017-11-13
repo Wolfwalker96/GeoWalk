@@ -1,5 +1,6 @@
 package ch.he_arc.inf3dlm_a.geowalk;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
@@ -21,5 +22,11 @@ public class GeoBase implements Serializable{
     public GeoBase(double latitude, double longitude, int score){
         this.score=score;
         location = new GeoBaseLocation(latitude,longitude);
+    }
+
+    @Exclude
+    @Override
+    public boolean equals(Object obj) {;
+        return this.id.equals(((GeoBase)obj).id);
     }
 }
