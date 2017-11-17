@@ -80,10 +80,11 @@ public class ScannerActivity extends AppCompatActivity {
                 if (barcodes.size() != 0) {
                     if(barcodes.valueAt(0).displayValue.equals("GeoWalk")){
                         Log.d("BARCODE",barcodes.valueAt(0).displayValue);
-                        Intent returnIntent = new Intent(ScannerActivity.this,MapActivity.class);
+                        Intent returnIntent = new Intent();
                         returnIntent.putExtra("base", base);
                         returnIntent.putExtra("isFound",true);
-                        ScannerActivity.this.startActivity(returnIntent);
+                        ScannerActivity.this.setResult(2, returnIntent);
+                        ScannerActivity.this.finish();
                     }
                 }
             }

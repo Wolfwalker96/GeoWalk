@@ -90,17 +90,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 if (ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                /*Intent intent = new Intent(MapActivity.this, ScannerActivity.class);
-                intent.putExtra("base", base);
-                intent.setAction(Long.toString(System.currentTimeMillis())); // Some magic tricks
-                PendingIntent pendingIntent = PendingIntent.getActivity(MapActivity.this, 1,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                basePendingIntentHashMap.put(base, pendingIntent);
-                locationManager.addProximityAlert(
-                        base.location.latitude,
-                        base.location.longitude,
-                        5,
-                        -1,
-                        pendingIntent);*/
                 refreshMap();
             }
 
@@ -164,7 +153,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                 Intent intent = new Intent(MapActivity.this, ScannerActivity.class);
                                 intent.putExtra("base", base);
                                 intent.setAction(Long.toString(System.currentTimeMillis())); // Some magic tricks
-                                startActivity(intent);
+                                startActivityForResult(intent,2);
                             }
                         }
                     }
@@ -196,14 +185,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        Log.d("TEST","Non, c'est moi !");
-        GeoBase baseFind = (GeoBase) intent.getExtras().get("base");
-        if(intent.getBooleanExtra("isFound",false)) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        GeoBase baseFind = (GeoBase) data.getExtras().get("base");
+        if(data.getBooleanExtra("isFound",false)) {
             basesFound.add(baseFind);
             scores += baseFind.score;
             refreshMap();
         }
     }
-
 }
