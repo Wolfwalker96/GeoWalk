@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">GeoWalk</string>
     <string name="title_activity_map">Carte</string>
+    <string name="login_button">Connection</string>
+    <string name="create_button">Inscription</string>
+    <string name="login_label_password">Mots de passe</string>
+    <string name="login_label_email">Adresse e-mail</string>
+    <string name="login_hint_email">abc@zyx.com</string>
+    <string name="login_hint_password">12345678</string>
+    <string name="login_error_password_short">Mot de passe trop court (minimum 8 caractères)</string>
+    <string name="login_error_password_incorrect">Mots de passe incorrect</string>
 </resources>

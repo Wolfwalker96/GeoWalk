@@ -36,6 +36,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,11 +51,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     private List<GeoBase> bases = new ArrayList<>();
     private HashMap<GeoBase, PendingIntent> basePendingIntentHashMap = new HashMap<>();
-    private int scores = 0;
+    private long scores;
     private List<GeoBase> basesFound = new ArrayList<>();
     private LocationManager locationManager;
     private DatabaseReference myDb;
     private Location location;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +66,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        userId = getIntent().getStringExtra("user_id");
         initFirebase();
         initLocation();
+
 
         findViewById(R.id.btnAddBase).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +82,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     protected void initFirebase() {
         myDb = FirebaseDatabase.getInstance().getReference();
+
+        myDb.child("users").child(userId).child("score").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("TEST",dataSnapshot.getValue().toString());
+                scores = (long)dataSnapshot.getValue();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         Query basesQuery = myDb.child("bases").orderByKey();
         basesQuery.addChildEventListener(new ChildEventListener() {
@@ -172,7 +189,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             else
                 map.addMarker(marker.alpha(0.5f));
         }
-        txvScore.setText("Score : "+Integer.toString(scores));
+        txvScore.setText("Score : "+Long.toString(scores));
     }
 
     @Override
@@ -192,5 +209,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             scores += baseFind.score;
             refreshMap();
         }
+        myDb.child("users").child(userId).child("score").setValue(scores);
     }
 }

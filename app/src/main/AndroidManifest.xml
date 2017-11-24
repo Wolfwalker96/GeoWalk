@@ -19,18 +19,25 @@
         <activity
             android:name=".MapActivity"
             android:label="@string/title_activity_map"
-            android:screenOrientation="portrait"
-            android:launchMode="singleInstance">
-            <intent-filter android:label="@string/app_name">
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait">
+
         </activity>
         <activity
             android:name=".ScannerActivity"
             android:label="Scanner"
             android:screenOrientation="portrait">
 
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait"
+            android:label="GeoWalk">
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
