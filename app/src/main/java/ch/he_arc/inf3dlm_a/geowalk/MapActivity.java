@@ -6,15 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.text.BoringLayout;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.location.LocationAvailability;
@@ -41,8 +37,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -52,7 +46,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private List<GeoBase> bases = new ArrayList<>();
     private HashMap<GeoBase, PendingIntent> basePendingIntentHashMap = new HashMap<>();
     private long scores;
-    private List<GeoBase> basesFound = new ArrayList<>();
+    private List<GeoBase> geoBasesFound = new ArrayList<>();
     private LocationManager locationManager;
     private DatabaseReference myDb;
     private Location location;
@@ -88,6 +82,39 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("TEST",dataSnapshot.getValue().toString());
                 scores = (long)dataSnapshot.getValue();
+                refreshMap();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        myDb.child("users").child(userId).child("geoBasesFound").addChildEventListener(new ChildEventListener() {
+
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                GeoBase base = dataSnapshot.getValue(GeoBase.class);
+                geoBasesFound.add(base);
+                refreshMap();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                GeoBase base = dataSnapshot.getValue(GeoBase.class);
+                geoBasesFound.remove(base);
+                refreshMap();
             }
 
             @Override
@@ -163,7 +190,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
                     // Proximity detection
                     for (GeoBase base : MapActivity.this.bases) {
-                        if (!basesFound.contains(base)) {
+                        if (!geoBasesFound.contains(base)) {
                             float[] distance = new float[3];
                             Location.distanceBetween(location.getLatitude(), location.getLongitude(), base.location.latitude, base.location.longitude, distance);
                             if (distance[0] <= 5) { // Distance of 5 meter
@@ -184,7 +211,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         map.clear();
         for (GeoBase base : bases) {
             MarkerOptions marker = new MarkerOptions().position(base.location.getLatLng()).title(base.id).flat(true);
-            if(!basesFound.contains(base))
+            if(!geoBasesFound.contains(base))
                 map.addMarker(marker);
             else
                 map.addMarker(marker.alpha(0.5f));
@@ -205,7 +232,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         GeoBase baseFind = (GeoBase) data.getExtras().get("base");
         if(data.getBooleanExtra("isFound",false)) {
-            basesFound.add(baseFind);
+            // geoBasesFound.add(baseFind);
+            myDb.child("users").child(userId).child("geoBasesFound").push().setValue(baseFind);
             scores += baseFind.score;
             refreshMap();
         }
