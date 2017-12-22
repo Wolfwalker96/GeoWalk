@@ -8,10 +8,12 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
+import android.view.ViewGroup;
 
 import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
@@ -38,31 +40,36 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import ch.he_arc.inf3dlm_a.geowalk.databinding.ActivityMapBinding;
+
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
-    private TextView txvScore;
 
     private List<GeoBase> bases = new ArrayList<>();
     private HashMap<GeoBase, PendingIntent> basePendingIntentHashMap = new HashMap<>();
-    private long scores;
+    public long score = 0;
     private List<GeoBase> geoBasesFound = new ArrayList<>();
     private LocationManager locationManager;
     private DatabaseReference myDb;
     private Location location;
     private String userId;
+    private ActivityMapBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
         userId = getIntent().getStringExtra("user_id");
         initFirebase();
         initLocation();
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
+        binding.setScore(score);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
 
         findViewById(R.id.btnAddBase).setOnClickListener(new View.OnClickListener() {
@@ -71,7 +78,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 myDb.child("bases").push().setValue(new GeoBase(location.getLatitude(),location.getLongitude(),2));
             }
         });
-        txvScore = (TextView) findViewById(R.id.scoreView);
     }
 
     protected void initFirebase() {
@@ -81,7 +87,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("TEST",dataSnapshot.getValue().toString());
-                scores = (long)dataSnapshot.getValue();
+                score = (long)dataSnapshot.getValue();
                 refreshMap();
             }
 
@@ -216,7 +222,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             else
                 map.addMarker(marker.alpha(0.5f));
         }
-        txvScore.setText("Score : "+Long.toString(scores));
+        binding.setScore(score);
     }
 
     @Override
@@ -234,9 +240,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         if(data.getBooleanExtra("isFound",false)) {
             // geoBasesFound.add(baseFind);
             myDb.child("users").child(userId).child("geoBasesFound").push().setValue(baseFind);
-            scores += baseFind.score;
+            score += baseFind.score;
             refreshMap();
         }
-        myDb.child("users").child(userId).child("score").setValue(scores);
+        myDb.child("users").child(userId).child("score").setValue(score);
     }
 }

@@ -18,14 +18,14 @@
 
         <activity
             android:name=".MapActivity"
-            android:label="@string/title_activity_map"
+            android:label="@string/map_title"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait">
 
         </activity>
         <activity
             android:name=".ScannerActivity"
-            android:label="Scanner"
+            android:label="@string/scanner_title"
             android:screenOrientation="portrait">
 
         </activity>

@@ -49,13 +49,13 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="@string/login_button"
+        android:text="@string/login_login"
         android:id="@+id/login_button"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="@string/create_button"
+        android:text="@string/login_signup"
         android:id="@+id/create_button"/>
     <TextView
         android:layout_width="match_parent"

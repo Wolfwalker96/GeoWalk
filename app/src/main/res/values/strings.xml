@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">GeoWalk</string>
-    <string name="title_activity_map">Carte</string>
-    <string name="login_button">Connection</string>
-    <string name="create_button">Inscription</string>
+    <string name="map_title">Carte</string>
+    <string name="map_label_score">Score : %d</string>
+    <string name="map_bases_add">Ajouter une base ici</string>
+    <string name="scanner_title">Scanner</string>
+    <string name="login_login">Connection</string>
+    <string name="login_signup">Inscription</string>
     <string name="login_label_password">Mots de passe</string>
     <string name="login_label_email">Adresse e-mail</string>
     <string name="login_hint_email">abc@zyx.com</string>
