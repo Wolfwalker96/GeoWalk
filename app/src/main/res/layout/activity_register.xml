@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ch.he_arc.inf3dlm_a.geowalk.RegisterActivity"
+    android:orientation="vertical"
+    android:padding="16dp">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:src="@drawable/ic_geowalk"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:text="@string/register_label_username"
+        android:labelFor="@id/username"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text=""
+        android:id="@+id/username"
+        android:inputType="text"
+        android:hint="@string/register_hint_username"
+        />
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="25dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:text="@string/login_label_email"
+        android:labelFor="@id/email" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text=""
+        android:id="@+id/email"
+        android:inputType="textEmailAddress"
+        android:hint="@string/login_hint_email" />
+
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="25dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="@string/login_label_password"
+        android:gravity="center_vertical"
+        android:labelFor="@id/password"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text=""
+        android:inputType="textPassword"
+        android:id="@+id/password"
+        android:hint="@string/login_hint_password"
+        />
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="25dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/login_signup"
+        android:id="@+id/create_button"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/error"
+        android:padding="3dp"
+        android:textSize="15sp"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:visibility="gone"
+        android:text="@string/login_error_password_short"
+        android:gravity="center_vertical"
+        android:id="@+id/error_password_short"/>
+</LinearLayout>

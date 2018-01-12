@@ -13,4 +13,6 @@
     <string name="login_error_password_short">Mot de passe trop court (minimum 8 caractères)</string>
     <string name="login_error_password_incorrect">Mots de passe incorrect</string>
     <string name="title_activity_score">Scores</string>
+    <string name="register_hint_username">Nom d\'utilisateur</string>
+    <string name="register_label_username">Nom d\'utilisateur</string>
 </resources>
