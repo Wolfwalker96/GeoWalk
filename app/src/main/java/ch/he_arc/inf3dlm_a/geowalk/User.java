@@ -14,10 +14,16 @@ import java.util.List;
 @IgnoreExtraProperties
 public class User implements Serializable {
     public long score;
+    public String userName;
     public List<GeoBase> geoBasesFound;
 
     public User(){
         score = 0;
         geoBasesFound = new ArrayList<GeoBase>();
+    }
+
+    public User(long score, String userName){
+        this.userName = userName;
+        this.score = score;
     }
 }
