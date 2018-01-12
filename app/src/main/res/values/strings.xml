@@ -12,4 +12,5 @@
     <string name="login_hint_password">12345678</string>
     <string name="login_error_password_short">Mot de passe trop court (minimum 8 caractères)</string>
     <string name="login_error_password_incorrect">Mots de passe incorrect</string>
+    <string name="title_activity_score">Scores</string>
 </resources>
