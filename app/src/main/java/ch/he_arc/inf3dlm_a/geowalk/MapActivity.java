@@ -39,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ch.he_arc.inf3dlm_a.geowalk.databinding.ActivityMapBinding;
 
@@ -78,8 +79,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 myDb.child("bases").push().setValue(new GeoBase(location.getLatitude(),location.getLongitude(),2));
             }
         });
+
+        findViewById(R.id.btnScores).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                startActivity(new Intent(MapActivity.this,ScoreActivity.class));
+            }
+        });
     }
 
+    /**
+     * Initialise the Firebase instance and events
+     */
     protected void initFirebase() {
         myDb = FirebaseDatabase.getInstance().getReference();
 
@@ -168,6 +179,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         });
     }
 
+    /**
+     * Initialize the location detection
+     */
     protected void initLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -213,6 +227,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }, android.os.Looper.myLooper());
     }
 
+    /**
+     * Refresh the map Fragement (Add marker)
+     */
     public void refreshMap() {
         map.clear();
         for (GeoBase base : bases) {
@@ -225,6 +242,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         binding.setScore(score);
     }
 
+    /**
+     * Is exectued when the Google Map Fragement is ready
+     * @param googleMap The Google Map Fragement
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -234,6 +255,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         map.setMyLocationEnabled(true);
     }
 
+    /**
+     * Is executed when the ScannerActivtiy return the datas
+     * @param requestCode Code of the request 10 for scanner return
+     * @param resultCode Code of the results 1 if scanner true 0 else
+     * @param data The results data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         GeoBase baseFind = (GeoBase) data.getExtras().get("base");
