@@ -26,4 +26,9 @@ public class User implements Serializable {
         this.userName = userName;
         this.score = score;
     }
+    public User(String userName)
+    {
+        this();
+        this.userName = userName;
+    }
 }
