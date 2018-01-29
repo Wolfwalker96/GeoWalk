@@ -17,6 +17,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Register Activity
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -27,6 +30,11 @@ public class RegisterActivity extends AppCompatActivity {
     private String username;
 
     private TextView error_short;
+
+    /**
+     * On Create
+     * @param savedInstanceState Usual
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +70,9 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * open the MapActivity
+     */
     private void openMap(){
         if (user != null) {
             Log.d("USER",user.getUid());
@@ -72,6 +83,10 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method fill email and password members
+     * @return True if the password is enough long
+     */
     protected boolean getPasswordEmailUsername(){
 
         username = ((EditText)findViewById(R.id.username)).getText().toString();
