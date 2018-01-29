@@ -21,22 +21,23 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Score activity
+ */
 public class ScoreActivity extends AppCompatActivity {
 
     List<User> users = new ArrayList<User>();
     ListView list;
     ArrayAdapter<User> adapter;
 
+    /**
+     * On create
+     * @param savedInstanceState Usual
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
-
-        //users.add(new User(56,"Marc"));
-        //users.add(new User(12,"Jean"));
-        //users.add(new User(43,"Valentin"));
-        //users.add(new User(34,"Léo"));
-        //users.add(new User(99,"PussyDestroyer"));
 
         list = (ListView) findViewById(R.id.scoreList);
         DatabaseReference myDb = FirebaseDatabase.getInstance().getReference();
