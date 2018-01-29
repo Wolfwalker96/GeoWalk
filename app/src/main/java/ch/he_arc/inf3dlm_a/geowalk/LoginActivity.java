@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if(getIntent().getExtras()!=null && getIntent().getExtras().getBoolean("logout",false))
         {
+            getIntent().putExtra("logout",false);
             mAuth.signOut();
         }
     }
@@ -173,13 +174,13 @@ public class LoginActivity extends AppCompatActivity {
 
                 final Activity activity = this;
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("Exit");
+                builder.setTitle(R.string.closing);
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage("You have to grant permissions to use this application.\nThe application will be closed now !");
+                builder.setMessage(R.string.permission_dialog);
                 builder.setCancelable(false);
 
                 builder.setPositiveButton(
-                        "Ok",
+                        R.string.ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();

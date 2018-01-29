@@ -107,10 +107,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         findViewById(R.id.btnDisconnect).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                finish();
                 Intent intent = new Intent(MapActivity.this,LoginActivity.class);
                 intent.putExtra("logout",true);
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -335,8 +335,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setWhen(System.currentTimeMillis())
                     .setSmallIcon(R.drawable.ic_geowalk)
-                    .setContentTitle("Base in your surrounding")
-                    .setContentText("Scan the base near you !")
+                    .setContentTitle("Base proche de vous")
+                    .setContentText("Scannez la base dans vos alentoures")
                     .setContentIntent(resultPendingIntent);
             notificationManager.notify(1, notificationBuilder.build());
     }
@@ -382,8 +382,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private void demandLocation()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("GPS not Found");  // GPS not found
-        builder.setMessage("Do you want to activate it ?\n(the application will not work properly if you don't)"); // Want to enable?
+        builder.setTitle(R.string.gps_not_found);
+        builder.setMessage(R.string.gps_activate);
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
                 startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
@@ -400,13 +400,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Exit")
-                .setMessage("Are you sure you want to exit?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setMessage(R.string.exit_dialog)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
                         System.exit(0);
                     }
-                }).setNegativeButton("No", null).show();
+                }).setNegativeButton(R.string.no, null).show();
     }
 }
