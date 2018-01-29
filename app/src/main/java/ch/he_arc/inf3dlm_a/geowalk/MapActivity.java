@@ -99,7 +99,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         });
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notifiable = true;
-        Log.d("lol","create");
     }
 
     @Override
@@ -111,17 +110,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onResume(){
         super.onResume();
-        Log.d("lol","resume");
-        Log.d("lol",getIntent().getExtras().toString());
         if(getIntent().getExtras().getBoolean("fromNotif",false)){
-            Log.d("lol","rekt");
+            getIntent().putExtra("fromNotif",false);
             GeoBase base = (GeoBase)getIntent().getExtras().get("base");
             Intent intent = new Intent(MapActivity.this, ScannerActivity.class);
             intent.putExtra("base", base);
             intent.setAction(Long.toString(System.currentTimeMillis()));// Some magic tricks
             startActivityForResult(intent,2);
         }
-
     }
 
     /**
