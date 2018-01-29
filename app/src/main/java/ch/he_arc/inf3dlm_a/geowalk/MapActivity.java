@@ -219,6 +219,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             return;
         }
         locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
+
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+        {
+            demandLocation();
+        }
+
         LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(LocationRequest.create().setInterval(500), new LocationCallback() {
             @Override
             public void onLocationAvailability(LocationAvailability locationAvailability) {
@@ -337,6 +344,21 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             myDb.child("users").child(userId).child("score").setValue(score);
             notifiable = true;
         }
+    }
+
+    private void demandLocation()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("GPS not Found");  // GPS not found
+        builder.setMessage("Do you want to activate it ?\n(the application will not work properly if you don't)"); // Want to enable?
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        });
+        builder.setNegativeButton("No", null);
+        builder.create().show();
+        return;
     }
 
     @Override
