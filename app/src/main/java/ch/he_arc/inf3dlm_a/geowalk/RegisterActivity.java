@@ -52,9 +52,6 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
                                 openMap();
                             }
-                            else{
-
-                            }
                         }
                     });
                 }

@@ -50,8 +50,19 @@
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:text="@string/title_activity_score"
+            map:layout_constraintBottom_toTopOf="@id/btnDisconnect"
+            map:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/btnDisconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:text="@string/disconnect"
             map:layout_constraintBottom_toBottomOf="parent"
             map:layout_constraintStart_toStartOf="parent" />
+
     </android.support.constraint.ConstraintLayout>
 </layout>
 

@@ -15,4 +15,5 @@
     <string name="title_activity_score">Scores</string>
     <string name="register_hint_username">Nom d\'utilisateur</string>
     <string name="register_label_username">Nom d\'utilisateur</string>
+    <string name="disconnect">Disconnect</string>
 </resources>

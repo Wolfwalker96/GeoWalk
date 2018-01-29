@@ -97,6 +97,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 startActivity(new Intent(MapActivity.this,ScoreActivity.class));
             }
         });
+
+        findViewById(R.id.btnDisconnect).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapActivity.this,LoginActivity.class);
+                intent.putExtra("logout",true);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notifiable = true;
     }
@@ -275,15 +286,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
      * Refresh the map Fragement (Add marker)
      */
     public void refreshMap() {
-        map.clear();
-        for (GeoBase base : bases) {
-            MarkerOptions marker = new MarkerOptions().position(base.location.getLatLng()).title("Score : "+Integer.toString(base.score)).flat(true);
-            if(!geoBasesFound.contains(base))
-                map.addMarker(marker);
-            else
-                map.addMarker(marker.alpha(0.5f));
+        if(map != null){
+            map.clear();
+            for (GeoBase base : bases) {
+                MarkerOptions marker = new MarkerOptions().position(base.location.getLatLng()).title("Score : "+Integer.toString(base.score)).flat(true);
+                if(!geoBasesFound.contains(base))
+                    map.addMarker(marker);
+                else
+                    map.addMarker(marker.alpha(0.5f));
+            }
+            binding.setScore(score);
         }
-        binding.setScore(score);
     }
 
     private void sendNotification(GeoBase base){

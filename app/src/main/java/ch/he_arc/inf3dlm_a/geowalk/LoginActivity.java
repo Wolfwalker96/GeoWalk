@@ -88,6 +88,11 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        if(getIntent().getExtras()!=null && getIntent().getExtras().getBoolean("logout",false))
+        {
+            mAuth.signOut();
+        }
     }
 
     protected boolean getPasswordEmail(){
