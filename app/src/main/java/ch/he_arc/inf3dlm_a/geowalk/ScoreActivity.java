@@ -1,5 +1,7 @@
 package ch.he_arc.inf3dlm_a.geowalk;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -109,5 +111,4 @@ public class ScoreActivity extends AppCompatActivity {
             }
         });
     }
-
 }

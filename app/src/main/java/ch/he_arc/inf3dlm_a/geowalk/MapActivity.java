@@ -1,7 +1,9 @@
 package ch.he_arc.inf3dlm_a.geowalk;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -263,13 +265,28 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        GeoBase baseFind = (GeoBase) data.getExtras().get("base");
-        if(data.getBooleanExtra("isFound",false)) {
-            // geoBasesFound.add(baseFind);
-            myDb.child("users").child(userId).child("geoBasesFound").push().setValue(baseFind);
-            score += baseFind.score;
-            refreshMap();
+        if(resultCode==1) {
+            GeoBase baseFind = (GeoBase) data.getExtras().get("base");
+            if (data.getBooleanExtra("isFound", false)) {
+                // geoBasesFound.add(baseFind);
+                myDb.child("users").child(userId).child("geoBasesFound").push().setValue(baseFind);
+                score += baseFind.score;
+                refreshMap();
+            }
+            myDb.child("users").child(userId).child("score").setValue(score);
         }
-        myDb.child("users").child(userId).child("score").setValue(score);
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Exit")
+                .setMessage("Are you sure you want to exit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                        System.exit(0);
+                    }
+                }).setNegativeButton("No", null).show();
     }
 }

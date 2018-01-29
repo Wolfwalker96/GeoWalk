@@ -1,5 +1,7 @@
 package ch.he_arc.inf3dlm_a.geowalk;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;

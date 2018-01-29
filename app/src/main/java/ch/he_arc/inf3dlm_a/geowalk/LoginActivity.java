@@ -116,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MapActivity.class);
             intent.putExtra("user_id",user.getUid());
             startActivity(intent);
+            this.finish();
         }
     }
 
@@ -142,6 +143,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 final Activity activity = this;
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("Exit");
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
                 builder.setMessage("You have to grant permissions to use this application.\nThe application will be closed now !");
                 builder.setCancelable(false);
 

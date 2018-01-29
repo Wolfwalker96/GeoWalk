@@ -71,6 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MapActivity.class);
             intent.putExtra("user_id",user.getUid());
             startActivity(intent);
+            this.finish();
         }
     }
 
