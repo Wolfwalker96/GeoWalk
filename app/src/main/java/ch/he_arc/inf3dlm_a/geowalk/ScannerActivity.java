@@ -85,7 +85,7 @@ public class ScannerActivity extends AppCompatActivity {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("base", base);
                         returnIntent.putExtra("isFound",true);
-                        ScannerActivity.this.setResult(2, returnIntent);
+                        ScannerActivity.this.setResult(1, returnIntent);
                         ScannerActivity.this.finish();
                     }
                 }

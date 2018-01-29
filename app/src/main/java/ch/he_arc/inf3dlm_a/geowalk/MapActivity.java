@@ -2,7 +2,10 @@ package ch.he_arc.inf3dlm_a.geowalk;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +62,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private Location location;
     private String userId;
     private ActivityMapBinding binding;
+    private NotificationManager notificationManager;
+    private String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
+    private boolean notifiable;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +97,31 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 startActivity(new Intent(MapActivity.this,ScoreActivity.class));
             }
         });
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notifiable = true;
+        Log.d("lol","create");
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if (intent != null)
+            setIntent(intent);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d("lol","resume");
+        Log.d("lol",getIntent().getExtras().toString());
+        if(getIntent().getExtras().getBoolean("fromNotif",false)){
+            Log.d("lol","rekt");
+            GeoBase base = (GeoBase)getIntent().getExtras().get("base");
+            Intent intent = new Intent(MapActivity.this, ScannerActivity.class);
+            intent.putExtra("base", base);
+            intent.setAction(Long.toString(System.currentTimeMillis()));// Some magic tricks
+            startActivityForResult(intent,2);
+        }
+
     }
 
     /**
@@ -198,36 +232,40 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                if (MapActivity.this.hasWindowFocus()) {
-                    location = locationResult.getLastLocation();
-                    // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude()),18.5f));
-                    float bearing = location.getBearing();
-                    map.animateCamera(CameraUpdateFactory.newCameraPosition(
-                            new CameraPosition(
-                                    new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()),
-                                    18.5f,
-                                    0,
-                                    bearing)), 1000, null);
-                    Log.d("BEARING", Float.toString(bearing));
 
-                    // Proximity detection
-                    for (GeoBase base : MapActivity.this.bases) {
-                        if (!geoBasesFound.contains(base)) {
-                            float[] distance = new float[3];
-                            Location.distanceBetween(location.getLatitude(), location.getLongitude(), base.location.latitude, base.location.longitude, distance);
-                            if (distance[0] <= 5) { // Distance of 5 meter
+                location = locationResult.getLastLocation();
+                // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude()),18.5f));
+                float bearing = location.getBearing();
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(
+                        new CameraPosition(
+                                new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()),
+                                18.5f,
+                                0,
+                                bearing)), 1000, null);
+                Log.d("BEARING", Float.toString(bearing));
+
+                // Proximity detection
+                for (GeoBase base : MapActivity.this.bases) {
+                    if (!geoBasesFound.contains(base)) {
+                        float[] distance = new float[3];
+                        Location.distanceBetween(location.getLatitude(), location.getLongitude(), base.location.latitude, base.location.longitude, distance);
+                        if (distance[0] <= 5) { // Distance of 5 meter
+                            if (MapActivity.this.hasWindowFocus()) {
                                 Intent intent = new Intent(MapActivity.this, ScannerActivity.class);
                                 intent.putExtra("base", base);
-                                intent.setAction(Long.toString(System.currentTimeMillis())); // Some magic tricks
+                                intent.setAction(Long.toString(System.currentTimeMillis()));// Some magic tricks
                                 startActivityForResult(intent,2);
+                            }else if (notifiable){
+                                sendNotification(base);
+                                notifiable = false;
                             }
                         }
                     }
-
                 }
             }
         }, android.os.Looper.myLooper());
     }
+
 
     /**
      * Refresh the map Fragement (Add marker)
@@ -242,6 +280,31 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 map.addMarker(marker.alpha(0.5f));
         }
         binding.setScore(score);
+    }
+
+    private void sendNotification(GeoBase base){
+        Intent intent = new Intent(MapActivity.this, MapActivity.class);
+        intent.putExtra("base",base);
+        intent.putExtra("fromNotif",true);
+        // Because clicking the notification opens a new ("special") activity, there's
+        // no need to create an artificial back stack.
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                    .setAutoCancel(true)
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setWhen(System.currentTimeMillis())
+                    .setSmallIcon(R.drawable.ic_geowalk)
+                    .setContentTitle("Base in your surrounding")
+                    .setContentText("Scan the base near you !")
+                    .setContentIntent(resultPendingIntent);
+            notificationManager.notify(1, notificationBuilder.build());
     }
 
     /**
@@ -265,6 +328,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("resultCode",Integer.toString(resultCode));
         if(resultCode==1) {
             GeoBase baseFind = (GeoBase) data.getExtras().get("base");
             if (data.getBooleanExtra("isFound", false)) {
@@ -274,6 +338,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 refreshMap();
             }
             myDb.child("users").child(userId).child("score").setValue(score);
+            notifiable = true;
         }
     }
 
