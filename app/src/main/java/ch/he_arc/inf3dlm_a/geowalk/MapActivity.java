@@ -263,13 +263,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 location = locationResult.getLastLocation();
                 // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude()),18.5f));
                 float bearing = location.getBearing();
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(
-                        new CameraPosition(
-                                new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()),
-                                18.5f,
-                                0,
-                                bearing)), 1000, null);
-                Log.d("BEARING", Float.toString(bearing));
+                if (map!= null) {
+                    map.animateCamera(CameraUpdateFactory.newCameraPosition(
+                            new CameraPosition(
+                                    new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()),
+                                    18.5f,
+                                    0,
+                                    bearing)), 1000, null);
+                    Log.d("BEARING", Float.toString(bearing));
+                }
 
                 // Proximity detection
                 for (GeoBase base : MapActivity.this.bases) {
@@ -384,12 +386,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.gps_not_found);
         builder.setMessage(R.string.gps_activate);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
                 startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
             }
         });
-        builder.setNegativeButton("No", null);
+        builder.setNegativeButton(R.string.no, null);
         builder.create().show();
         return;
     }
