@@ -235,7 +235,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     public void refreshMap() {
         map.clear();
         for (GeoBase base : bases) {
-            MarkerOptions marker = new MarkerOptions().position(base.location.getLatLng()).title(base.id).flat(true);
+            MarkerOptions marker = new MarkerOptions().position(base.location.getLatLng()).title("Score : "+Integer.toString(base.score)).flat(true);
             if(!geoBasesFound.contains(base))
                 map.addMarker(marker);
             else
