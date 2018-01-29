@@ -49,6 +49,9 @@ import java.util.Map;
 
 import ch.he_arc.inf3dlm_a.geowalk.databinding.ActivityMapBinding;
 
+/**
+ * Map Activity
+ */
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
@@ -67,7 +70,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private boolean notifiable;
 
 
-
+    /**
+     * On create
+     * @param savedInstanceState usual
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,12 +118,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         notifiable = true;
     }
 
+    /**
+     * On new intent
+     * @param intent the new intent
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         if (intent != null)
             setIntent(intent);
     }
 
+    /**
+     * On Resume
+     */
     @Override
     public void onResume(){
         super.onResume();
@@ -299,6 +312,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
     }
 
+    /**
+     * Send a notification for a base
+     * @param base a nearby base
+     */
     private void sendNotification(GeoBase base){
         Intent intent = new Intent(MapActivity.this, MapActivity.class);
         intent.putExtra("base",base);
@@ -359,6 +376,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
     }
 
+    /**
+     * Check if Geolocation is enabled
+     */
     private void demandLocation()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -374,6 +394,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         return;
     }
 
+    /**
+     * On back pressed
+     */
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Exit")
