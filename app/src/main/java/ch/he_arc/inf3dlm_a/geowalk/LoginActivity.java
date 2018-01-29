@@ -34,7 +34,9 @@ import org.w3c.dom.Text;
 
 import java.util.Map;
 
-
+/**
+ * Login Activity
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -48,6 +50,10 @@ public class LoginActivity extends AppCompatActivity {
     private TextView error_short;
     private TextView error_incorrect;
 
+    /**
+     * onCreate
+     * @param savedInstanceState Usual
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +101,10 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method fill email and password members
+     * @return True if the password is enough long
+     */
     protected boolean getPasswordEmail(){
 
         email = ((EditText)findViewById(R.id.email)).getText().toString();
@@ -107,6 +117,9 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * On Start
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -115,6 +128,9 @@ public class LoginActivity extends AppCompatActivity {
         openMap();
     }
 
+    /**
+     * Open the Map Activity if a user is logged
+     */
     private void openMap(){
         if (user != null) {
             Log.d("USER",user.getUid());
@@ -125,6 +141,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Requests for permission
+     */
     private void PermissionRequest(){
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -139,6 +158,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Results of permission request
+     * @param requestCode The request Code
+     * @param permissions The permissions of the request
+     * @param grantResults The results of the request
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if(requestCode == ACCESS_PERMISSION) {
