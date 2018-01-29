@@ -1,6 +1,5 @@
 package ch.he_arc.inf3dlm_a.geowalk;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
@@ -14,7 +13,7 @@ import java.util.List;
 @IgnoreExtraProperties
 public class User implements Serializable {
     public long score;
-    public String userName;
+    public String username;
     public List<GeoBase> geoBasesFound;
 
     public User(){
@@ -22,13 +21,13 @@ public class User implements Serializable {
         geoBasesFound = new ArrayList<GeoBase>();
     }
 
-    public User(long score, String userName){
-        this.userName = userName;
+    public User(long score, String username){
+        this.username = username;
         this.score = score;
     }
-    public User(String userName)
+    public User(String username)
     {
         this();
-        this.userName = userName;
+        this.username = username;
     }
 }

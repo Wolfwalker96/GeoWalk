@@ -1,7 +1,15 @@
 package ch.he_arc.inf3dlm_a.geowalk;
 
+import android.*;
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private String email;
     private String password;
+
+    private static final int ACCESS_PERMISSION = 1;
 
     private TextView error_short;
     private TextView error_incorrect;
@@ -95,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         user = mAuth.getCurrentUser();
+        PermissionRequest();
         openMap();
     }
 
@@ -104,6 +116,47 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MapActivity.class);
             intent.putExtra("user_id",user.getUid());
             startActivity(intent);
+        }
+    }
+
+    private void PermissionRequest(){
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            android.Manifest.permission.CAMERA,
+                            android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    ACCESS_PERMISSION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if(requestCode == ACCESS_PERMISSION) {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && (grantResults[0] != PackageManager.PERMISSION_GRANTED
+                    || grantResults[1] != PackageManager.PERMISSION_GRANTED)) {
+
+                final Activity activity = this;
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setMessage("You have to grant permissions to use this application.\nThe application will be closed now !");
+                builder.setCancelable(false);
+
+                builder.setPositiveButton(
+                        "Ok",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                activity.finish();
+                                System.exit(0);
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
         }
     }
 }

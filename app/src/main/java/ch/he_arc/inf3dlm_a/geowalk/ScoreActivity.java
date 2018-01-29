@@ -1,11 +1,7 @@
 package ch.he_arc.inf3dlm_a.geowalk;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.util.SortedList;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +16,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.ToLongFunction;
 
 public class ScoreActivity extends AppCompatActivity {
 
@@ -52,7 +46,7 @@ public class ScoreActivity extends AppCompatActivity {
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                 TextView text2 = (TextView) view.findViewById(android.R.id.text2);
 
-                text1.setText(users.get(position).userName);
+                text1.setText(users.get(position).username);
                 text2.setText("Score " + Long.toString(users.get(position).score));
                 return view;
             }
