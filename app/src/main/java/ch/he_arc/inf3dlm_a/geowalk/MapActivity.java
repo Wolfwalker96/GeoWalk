@@ -251,6 +251,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                 intent.putExtra("base", base);
                                 intent.setAction(Long.toString(System.currentTimeMillis()));// Some magic tricks
                                 startActivityForResult(intent,2);
+                                notifiable = false;
                             }else if (notifiable){
                                 sendNotification(base);
                                 notifiable = false;
